@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>웃음대회 🌸 오늘의 미소왕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ff8fab; --pink-d:#f06292; --peach:#ffc2a8; --cream:#fff8f3;
+  --lav:#cdb4ff; --mint:#a8e6cf; --ink:#4a3a46; --sub:#9a8592;
+  --card:#ffffffd9; --shadow:0 10px 30px rgba(240,98,146,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Gowun Dodum',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,#ffe4ec 0%,#fff1e6 45%,#efe7ff 100%);
+  min-height:100vh;overflow-x:hidden;
+}
+.bubbles span{position:fixed;border-radius:50%;opacity:.45;filter:blur(2px);z-index:0;animation:float 14s ease-in-out infinite}
+.bubbles span:nth-child(1){width:180px;height:180px;background:#ffd1dc;top:-40px;left:-50px}
+.bubbles span:nth-child(2){width:120px;height:120px;background:#e2d4ff;bottom:10%;right:-30px;animation-delay:-4s}
+.bubbles span:nth-child(3){width:90px;height:90px;background:#ffe0c7;bottom:-20px;left:20%;animation-delay:-8s}
+@keyframes float{50%{transform:translateY(-25px) scale(1.05)}}
+.wrap{position:relative;z-index:1;max-width:460px;margin:0 auto;padding:22px 18px 40px;min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;animation:fade .45s ease}
+.screen.on{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1,h2,.jua{font-family:'Jua',sans-serif;font-weight:400}
+
+/* intro */
+.hero{text-align:center;margin-top:5vh}
+.badge{display:inline-block;background:#fff;border-radius:99px;padding:6px 14px;font-size:13px;color:var(--pink-d);box-shadow:var(--shadow)}
+.hero h1{font-size:52px;margin:18px 0 6px;background:linear-gradient(90deg,#f06292,#ff9a76,#b388ff);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-1px}
+.hero p{color:var(--sub);line-height:1.7;font-size:15px}
+.face-ill{width:170px;height:170px;margin:28px auto 8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ffe0e9 60%,#ffc7d6);display:grid;place-items:center;box-shadow:var(--shadow);animation:bounce 2.4s ease-in-out infinite;font-size:86px}
+@keyframes bounce{50%{transform:translateY(-10px) rotate(-3deg)}}
+.rules{background:var(--card);border-radius:22px;padding:16px 18px;margin:22px 0;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.rules li{list-style:none;display:flex;gap:10px;align-items:center;padding:6px 0;font-size:14.5px}
+.rules li b{display:grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:#ffe3ec;color:var(--pink-d);font-family:'Jua';font-weight:400}
+.best{text-align:center;font-size:13px;color:var(--sub);margin-bottom:10px}
+.btn{font-family:'Jua',sans-serif;font-size:21px;border:0;border-radius:99px;padding:17px 22px;width:100%;cursor:pointer;color:#fff;background:linear-gradient(90deg,#ff8fab,#ff9a76);box-shadow:0 10px 24px rgba(255,120,150,.4);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:#fff;color:var(--pink-d);box-shadow:var(--shadow)}
+.btn+.btn{margin-top:10px}
+.mt-auto{margin-top:auto}
+
+/* camera */
+.cam-top{text-align:center;margin-bottom:14px}
+.cam-top h2{font-size:26px}
+.cam-top p{color:var(--sub);font-size:14px;margin-top:4px;min-height:20px}
+.cam{position:relative;width:100%;aspect-ratio:3/4;border-radius:30px;overflow:hidden;background:#2b2127;box-shadow:var(--shadow);border:5px solid #fff}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.guide{position:absolute;left:50%;top:46%;width:62%;aspect-ratio:3/4;transform:translate(-50%,-50%);border:3px dashed rgba(255,255,255,.7);border-radius:50%;transition:.3s}
+.guide.ok{border:4px solid #a8e6cf;box-shadow:0 0 0 999px rgba(0,0,0,.18),0 0 30px #a8e6cf}
+.count{position:absolute;inset:0;display:grid;place-items:center;font-family:'Jua';font-size:150px;color:#fff;text-shadow:0 6px 30px rgba(240,98,146,.8);pointer-events:none}
+.count.pop{animation:pop .9s ease}
+@keyframes pop{0%{transform:scale(1.8);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(.8);opacity:0}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:flash .5s ease}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+.live{position:absolute;left:14px;right:14px;bottom:14px;background:rgba(255,255,255,.88);border-radius:16px;padding:9px 12px;font-size:13px;display:none}
+.live.on{display:block}
+.live .bar{height:8px;background:#f3e6ec;border-radius:9px;margin-top:5px;overflow:hidden}
+.live .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffb3c6,#ff6f91);border-radius:9px;transition:width .15s}
+.tipline{text-align:center;color:var(--sub);font-size:13px;margin:12px 0}
+
+/* fallback */
+.fb{background:var(--card);border-radius:24px;padding:24px 20px;text-align:center;box-shadow:var(--shadow);margin-top:4vh}
+.fb .emo{font-size:60px}
+.fb h2{font-size:24px;margin:8px 0}
+.fb p{color:var(--sub);font-size:14.5px;line-height:1.7;margin-bottom:18px}
+#fileIn{display:none}
+
+/* analyzing */
+.ana{align-items:center;justify-content:center;text-align:center}
+.scan{position:relative;width:78%;aspect-ratio:3/4;border-radius:26px;overflow:hidden;border:5px solid #fff;box-shadow:var(--shadow)}
+.scan img{width:100%;height:100%;object-fit:cover}
+.scan::after{content:"";position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,transparent,rgba(255,143,171,.55),transparent);animation:scan 1.6s linear infinite}
+@keyframes scan{from{top:-30%}to{top:100%}}
+.ana h2{font-size:24px;margin-top:22px}
+.ana p{color:var(--sub);margin-top:6px;font-size:14px}
+.dots i{display:inline-block;width:8px;height:8px;margin:14px 3px 0;border-radius:50%;background:var(--pink);animation:dot 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-8px);opacity:.4}}
+
+/* result */
+.polaroid{background:#fff;padding:12px 12px 16px;border-radius:14px;box-shadow:0 14px 34px rgba(120,60,90,.18);transform:rotate(-2.5deg);width:76%;margin:6px auto 0;position:relative}
+.polaroid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px;display:block}
+.polaroid .cap{font-family:'Jua';text-align:center;margin-top:10px;font-size:15px;color:var(--sub)}
+.sticker{position:absolute;right:-22px;top:-22px;width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,#ff6f91,#ff9a76);color:#fff;display:grid;place-items:center;text-align:center;box-shadow:0 8px 20px rgba(255,111,145,.5);transform:rotate(10deg);font-family:'Jua';line-height:1}
+.sticker .n{font-size:44px}.sticker .u{font-size:14px;opacity:.9}
+.sticker.perfect{background:linear-gradient(135deg,#ffd54f,#ff8a65,#f06292);animation:shine 1.5s ease-in-out infinite}
+@keyframes shine{50%{transform:rotate(10deg) scale(1.08)}}
+.title{text-align:center;margin:24px 0 4px}
+.title h2{font-size:30px}
+.title p{color:var(--sub);font-size:14.5px;margin-top:4px;line-height:1.6}
+.box{background:var(--card);border-radius:22px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+.box h3{font-family:'Jua';font-weight:400;font-size:18px;margin-bottom:12px}
+.feat{margin-bottom:11px}
+.feat .row{display:flex;justify-content:space-between;font-size:14px}
+.feat .row span:last-child{color:var(--pink-d);font-family:'Jua'}
+.feat .bar{height:10px;background:#f6e9ef;border-radius:9px;overflow:hidden;margin-top:5px}
+.feat .bar i{display:block;height:100%;width:0;border-radius:9px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.reason{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed #f1dce5;font-size:14.5px;line-height:1.6}
+.reason:last-child{border:0}
+.reason .e{font-size:20px;line-height:1.3}
+.tip{background:linear-gradient(135deg,#fff0f5,#f3ecff);border-radius:16px;padding:13px 15px;font-size:14px;line-height:1.65;margin-top:10px}
+.ai{font-size:14.5px;line-height:1.7;background:#fff7e9;border-radius:16px;padding:12px 15px;margin-top:10px}
+.save{text-align:center;font-size:12.5px;color:var(--sub);margin:14px 0 16px}
+.err{color:#d6336c;font-size:14px;margin-top:10px;text-align:center}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+</style>
+</head>
+<body>
+<div class="bubbles"><span></span><span></span><span></span></div>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+
+  <!-- 1. INTRO -->
+  <section class="screen on" id="sIntro">
+    <div class="hero">
+      <span class="badge">👶 육아 중에도 웃어요 · 엄마들의 웃음대회</span>
+      <h1>웃음대회</h1>
+      <p>오늘 하루도 고생한 우리 맘님,<br>제일 예쁜 미소 한 번 보여주세요 💕</p>
+      <div class="face-ill">😊</div>
+    </div>
+    <ul class="rules">
+      <li><b>1</b>셀카 카메라로 얼굴을 찾아요</li>
+      <li><b>2</b>3·2·1 카운트 후 찰칵! 📸</li>
+      <li><b>3</b>미소를 분석해서 점수와 이유를 알려드려요</li>
+      <li><b>💯</b>평균은 80점, 100점은 진짜 활짝 웃어야 나와요!</li>
+    </ul>
+    <div class="best" id="bestTxt"></div>
+    <button class="btn mt-auto" id="startBtn">✨ 시작하기</button>
+  </section>
+
+  <!-- 2. CAMERA -->
+  <section class="screen" id="sCam">
+    <div class="cam-top">
+      <h2 id="camTitle">얼굴을 찾고 있어요 👀</h2>
+      <p id="camSub">동그라미 안에 얼굴을 맞춰주세요</p>
+    </div>
+    <div class="cam">
+      <video id="video" playsinline muted autoplay></video>
+      <div class="guide" id="guide"></div>
+      <div class="count" id="count"></div>
+      <div class="flash" id="flash"></div>
+      <div class="live" id="live">지금 미소 게이지 😊<div class="bar"><i id="liveBar"></i></div></div>
+    </div>
+    <div class="tipline">💡 눈까지 함께 웃으면 점수가 쑥쑥 올라가요</div>
+    <button class="btn ghost" id="camCancel">처음으로</button>
+  </section>
+
+  <!-- 2-b. FALLBACK (native selfie camera) -->
+  <section class="screen" id="sFallback">
+    <div class="fb">
+      <div class="emo">🤳</div>
+      <h2>셀카로 찍어주세요!</h2>
+      <p id="fbMsg">이 화면에서는 카메라를 바로 켤 수 없어요.<br>아래 버튼을 누르면 휴대폰 셀카 카메라가 열려요.<br>마음속으로 <b>3·2·1</b> 세고 활짝 웃으며 찰칵! 📸</p>
+      <button class="btn" id="fbBtn">📸 셀카 찍기</button>
+      <input type="file" id="fileIn" accept="image/*" capture="user">
+      <div class="err" id="fbErr"></div>
+    </div>
+    <button class="btn ghost" style="margin-top:14px" id="fbBack">처음으로</button>
+  </section>
+
+  <!-- 3. ANALYZING -->
+  <section class="screen ana" id="sAna">
+    <div class="scan"><img id="anaImg" alt="찍은 사진"></div>
+    <h2>미소를 분석하고 있어요</h2>
+    <p>입꼬리 · 눈웃음 · 치아 · 균형을 보는 중…</p>
+    <div class="dots"><i></i><i></i><i></i></div>
+  </section>
+
+  <!-- 4. RESULT -->
+  <section class="screen" id="sResult">
+    <div class="polaroid">
+      <img id="resImg" alt="내 미소 사진">
+      <div class="cap" id="resCap"></div>
+      <div class="sticker" id="sticker"><div><div class="n" id="scoreN">0</div><div class="u">점</div></div></div>
+    </div>
+    <div class="title">
+      <h2 id="gradeT"></h2>
+      <p id="gradeD"></p>
+    </div>
+    <div class="box">
+      <h3>📊 미소 분석표</h3>
+      <div id="feats"></div>
+    </div>
+    <div class="box">
+      <h3>💬 이 점수가 나온 이유</h3>
+      <div id="reasons"></div>
+      <div class="ai" id="aiCmt" style="display:none"></div>
+      <div class="tip" id="tip"></div>
+    </div>
+    <div class="save">📎 사진을 길게 누르면 저장할 수 있어요 (지원되는 화면에서)</div>
+    <button class="btn" id="againBtn">🔁 다시 도전하기</button>
+    <button class="btn ghost" id="homeBtn">처음으로</button>
+  </section>
+</div>
+
+<script type="module">
+const $ = id => document.getElementById(id);
+const screens = ['sIntro','sCam','sFallback','sAna','sResult'];
+const show = id => { screens.forEach(s => $(s).classList.toggle('on', s === id)); window.scrollTo(0,0); };
+const clamp = (v,a=0,b=1) => Math.max(a, Math.min(b, v));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* ---------- best score ---------- */
+function getBest(){ try{ return +localStorage.getItem('smileBest') || 0 }catch(e){ return 0 } }
+function setBest(v){ try{ localStorage.setItem('smileBest', v) }catch(e){} }
+function renderBest(){ const b = getBest(); $('bestTxt').textContent = b ? `🏆 내 최고 기록: ${b}점` : ''; }
+renderBest();
+
+/* ---------- engines ---------- */
+let landmarker = null, mlTried = false, mlPromise = null;
+let sample = null;
+const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+
+function loadML(){
+  if (mlPromise) return mlPromise;
+  mlPromise = (async () => {
+    try {
+      const vision = await import(MP);
+      const files = await vision.FilesetResolver.forVisionTasks(MP + '/wasm');
+      const opts = (delegate) => ({
+        baseOptions:{ modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate },
+        outputFaceBlendshapes:true, runningMode:'VIDEO', numFaces:1
+      });
+      try { landmarker = await vision.FaceLandmarker.createFromOptions(files, opts('GPU')); }
+      catch(e){ landmarker = await vision.FaceLandmarker.createFromOptions(files, opts('CPU')); }
+    } catch(e){ landmarker = null; console.warn('ML unavailable', e); }
+    mlTried = true;
+    return landmarker;
+  })();
+  return mlPromise;
+}
+loadML();
+
+(async () => {
+  try {
+    if (window.claude && window.claude.use) {
+      const s = await window.claude.use('sample');
+      if (s) {
+        let ok = true;
+        try { const lim = await s.limits(); ok = !!(lim && lim.images); } catch(e){}
+        if (ok) sample = s;
+      }
+    }
+  } catch(e){}
+})();
+
+/* ---------- features & score ---------- */
+function featuresFromBlend(cats){
+  const g = n => (cats.find(c => c.categoryName === n) || {score:0}).score;
+  const sL = g('mouthSmileLeft'), sR = g('mouthSmileRight');
+  const smileRaw = (sL + sR) / 2;
+  const smile = clamp(smileRaw / 0.9);
+  const cheek = (g('cheekSquintLeft') + g('cheekSquintRight')) / 2;
+  const eyeSq = (g('eyeSquintLeft') + g('eyeSquintRight')) / 2;
+  const eyes = clamp((cheek * 0.6 + eyeSq * 0.4) / 0.55);
+  const upper = (g('mouthUpperUpLeft') + g('mouthUpperUpRight')) / 2;
+  const teeth = clamp(Math.max(upper / 0.5, g('jawOpen') / 0.35)) * (smile > 0.3 ? 1 : 0.5);
+  const sym = 1 - clamp(Math.abs(sL - sR) * 2.5);
+  return { smile, eyes, teeth, sym };
+}
+
+function computeScore(f){
+  const raw = 0.5*f.smile + 0.25*f.eyes + 0.15*f.teeth + 0.10*f.sym;
+  let s;
+  if (raw <= 0.1) s = 40;
+  else if (raw <= 0.54) s = 40 + (raw - 0.1) / 0.44 * 40;
+  else s = 80 + (raw - 0.54) / 0.31 * 20;
+  s = Math.round(Math.min(100, s));
+  // 100점은 입꼬리 + 눈웃음 모두 최고일 때만!
+  if (s >= 100 && !(f.smile >= 0.85 && f.eyes >= 0.5)) s = 99;
+  return s;
+}
+
+/* ---------- camera flow ---------- */
+let stream = null, running = false, cancelFlag = false;
+
+async function start(){
+  cancelFlag = false;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return gotoFallback();
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:{ideal:720}, height:{ideal:960} }, audio:false });
+  } catch(e){ return gotoFallback(e && e.name === 'NotAllowedError' ? 'denied' : null); }
+  const v = $('video');
+  v.srcObject = stream;
+  show('sCam');
+  $('camTitle').textContent = '얼굴을 찾고 있어요 👀';
+  $('camSub').textContent = '동그라미 안에 얼굴을 맞춰주세요';
+  $('guide').classList.remove('ok'); $('live').classList.remove('on');
+  try { await v.play(); } catch(e){}
+  await new Promise(r => v.readyState >= 2 ? r() : v.onloadeddata = r);
+
+  if (!mlTried) { $('camSub').textContent = '미소 분석기를 준비하고 있어요…'; await Promise.race([loadML(), sleep(8000)]); }
+  if (cancelFlag) return;
+
+  if (!landmarker && !sample) {
+    stopCam();
+    show('sFallback');
+    $('fbMsg').innerHTML = '미소 분석기를 불러오지 못했어요 😢<br>인터넷 연결을 확인하고 다시 시도해주세요.';
+    $('fbBtn').style.display = 'none';
+    return;
+  }
+  if (landmarker) await detectLoop(); else await simpleCountdown();
+}
+
+async function detectLoop(){
+  const v = $('video');
+  try { landmarker.setOptions({ runningMode:'VIDEO' }); } catch(e){}
+  running = true;
+  let faceFrames = 0, counting = false, lastT = -1;
+  const startCount = async () => {
+    counting = true;
+    $('camTitle').textContent = '찾았다! 이제 활짝 웃어요 😆';
+    $('camSub').textContent = '';
+    $('live').classList.add('on');
+    for (const n of [3,2,1]) {
+      if (cancelFlag) return;
+      const c = $('count'); c.textContent = n; c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
+      await sleep(1000);
+    }
+    $('count').textContent = '';
+    running = false;
+    await shoot();
+  };
+  const tick = () => {
+    if (!running || cancelFlag) return;
+    if (v.currentTime !== lastT) {
+      lastT = v.currentTime;
+      let res = null;
+      try { res = landmarker.detectForVideo(v, performance.now()); } catch(e){}
+      const has = res && res.faceLandmarks && res.faceLandmarks.length;
+      $('guide').classList.toggle('ok', !!has);
+      if (has && res.faceBlendshapes && res.faceBlendshapes[0]) {
+        const sc = computeScore(featuresFromBlend(res.faceBlendshapes[0].categories));
+        $('liveBar').style.width = ((sc - 40) / 60 * 100) + '%';
+      }
+      if (!counting) {
+        faceFrames = has ? faceFrames + 1 : 0;
+        if (faceFrames > 12) startCount();
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+async function simpleCountdown(){
+  $('camTitle').textContent = '준비됐나요? 활짝 웃어요 😆';
+  $('camSub').textContent = '';
+  await sleep(1200);
+  for (const n of [3,2,1]) {
+    if (cancelFlag) return;
+    const c = $('count'); c.textContent = n; c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
+    await sleep(1000);
+  }
+  $('count').textContent = '';
+  await shoot();
+}
+
+async function shoot(){
+  if (cancelFlag) return;
+  const v = $('video');
+  $('flash').classList.remove('go'); void $('flash').offsetWidth; $('flash').classList.add('go');
+  const w = v.videoWidth, h = v.videoHeight;
+  // crop to 3:4 like preview
+  let cw = w, ch = h;
+  if (w / h > 3/4) cw = h * 3/4; else ch = w * 4/3;
+  const cv = document.createElement('canvas');
+  const scale = Math.min(1, 900 / ch);
+  cv.width = Math.round(cw * scale); cv.height = Math.round(ch * scale);
+  const ctx = cv.getContext('2d');
+  ctx.translate(cv.width, 0); ctx.scale(-1, 1);
+  ctx.drawImage(v, (w - cw)/2, (h - ch)/2, cw, ch, 0, 0, cv.width, cv.height);
+  stopCam();
+  await sleep(350);
+  analyze(cv);
+}
+
+function stopCam(){
+  running = false;
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+}
+
+function gotoFallback(reason){
+  show('sFallback');
+  $('fbErr').textContent = '';
+  $('fbBtn').style.display = '';
+  let framed = false; try { framed = window.self !== window.top; } catch(e){ framed = true; }
+  if (reason === 'denied' && !framed) $('fbMsg').innerHTML = '카메라 권한이 꺼져 있어요 🙈<br>아래 버튼으로 셀카를 찍거나, 브라우저 설정에서 카메라를 허용해주세요.<br>마음속으로 <b>3·2·1</b> 세고 찰칵! 📸';
+}
+
+/* ---------- file fallback ---------- */
+$('fbBtn').onclick = () => $('fileIn').click();
+$('fileIn').onchange = async (e) => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation:'from-image' }).catch(() => createImageBitmap(file));
+    const scale = Math.min(1, 900 / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    if (!mlTried) await Promise.race([loadML(), sleep(5000)]);
+    if (!landmarker && !sample) { $('fbErr').textContent = '미소 분석기를 불러오지 못했어요. 잠시 후 다시 시도해주세요 🙏'; return; }
+    analyze(cv);
+  } catch(err){ $('fbErr').textContent = '사진을 읽지 못했어요. 다시 찍어주세요 🙏'; }
+};
+
+/* ---------- analysis ---------- */
+async function analyze(cv){
+  const url = cv.toDataURL('image/jpeg', 0.9);
+  $('anaImg').src = url;
+  show('sAna');
+  const t0 = performance.now();
+  let f = null, comment = '', noFace = false;
+  try {
+    if (landmarker) {
+      landmarker.setOptions({ runningMode:'IMAGE' });
+      const r = landmarker.detect(cv);
+      if (r.faceBlendshapes && r.faceBlendshapes[0]) f = featuresFromBlend(r.faceBlendshapes[0].categories);
+      else noFace = true;
+    } else if (sample) {
+      const res = await askClaude(cv);
+      if (!res || res.face === false) noFace = true;
+      else { f = { smile:clamp(+res.smile||0), eyes:clamp(+res.eyes||0), teeth:clamp(+res.teeth||0), sym:clamp(+res.symmetry||0.8) }; comment = res.comment || ''; }
+    }
+  } catch(e){
+    console.warn(e);
+    show('sFallback'); $('fbBtn').style.display = '';
+    $('fbErr').textContent = (e && e.code === 'rate_limited') ? '잠깐 쉬었다가 다시 해주세요 ☕' : '분석 중에 문제가 생겼어요. 다시 찍어주세요 🙏';
+    return;
+  }
+  const wait = 2200 - (performance.now() - t0);
+  if (wait > 0) await sleep(wait);
+  if (noFace || !f) {
+    show(landmarker && navigator.mediaDevices ? 'sIntro' : 'sFallback');
+    const msg = '얼굴을 찾지 못했어요 🥲 얼굴이 잘 보이게 다시 찍어주세요!';
+    if ($('sFallback').classList.contains('on')) { $('fbBtn').style.display=''; $('fbErr').textContent = msg; }
+    else $('bestTxt').textContent = msg;
+    return;
+  }
+  showResult(url, f, comment);
+}
+
+async function askClaude(cv){
+  const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.85));
+  const prompt = `당신은 "엄마들의 웃음대회" 심사위원입니다. 첨부된 셀카 한 장에서 미소를 평가하세요.
+사람의 얼굴이 없거나 너무 가려져 있으면 face를 false로 하세요.
+각 항목은 0~1 사이 숫자(소수 둘째 자리)로, 아래 기준을 엄격하게 지키세요:
+- smile (입꼬리 올라감): 0=무표정, 0.3=살짝 미소, 0.6=보통 미소, 0.8=활짝, 0.95+=입꼬리가 최대로 올라간 함박웃음
+- eyes (눈웃음/광대 올라감, 뒤센 미소): 0=눈은 무표정, 0.3=살짝, 0.6=눈이 확실히 휘어짐, 0.9+=눈이 반달처럼 접힘
+- teeth (치아가 보이는 정도): 0=안 보임, 0.5=윗니 일부, 0.9+=윗니가 시원하게 다 보임
+- symmetry (좌우 입꼬리 균형): 0.5=한쪽만 올라감, 0.9+=거의 대칭
+comment: 20대 엄마에게 건네는 따뜻하고 귀여운 한국어 한두 문장(사진 속 표정에 대한 구체적인 칭찬, 이모지 1개). 외모 평가는 하지 말고 표정만 이야기하세요.
+JSON만 출력: {"face":true,"smile":0.00,"eyes":0.00,"teeth":0.00,"symmetry":0.00,"comment":"..."}`;
+  let out;
+  try { out = await sample.json(prompt, { images:[blob], modelTier:'default' }); }
+  catch(e){
+    if (e && (e.code === 'rate_limited' || e.code === 'not_granted')) throw e;
+    const r = await sample(prompt, { images:[blob], modelTier:'default' });
+    const m = (r.text || '').match(/\{[\s\S]*\}/);
+    out = m ? JSON.parse(m[0]) : null;
+  }
+  return out;
+}
+
+/* ---------- result ---------- */
+const GRADES = [
+  [100,'☀️ 햇살 미소 여왕','완벽해요! 보는 사람까지 따라 웃게 되는 100점 미소예요 👑'],
+  [95,'💖 미소 천사','거의 만점! 아기도 반해버릴 환한 미소예요'],
+  [88,'🌷 러블리 스마일','눈부터 입까지 사랑스러움이 가득해요'],
+  [80,'😊 기분 좋은 미소','딱 평균 이상! 따뜻함이 느껴지는 미소예요'],
+  [70,'🌱 은은한 미소','차분하고 다정한 미소예요. 조금만 더 활짝!'],
+  [60,'🙂 수줍은 미소','살짝 쑥스러웠나요? 다음엔 더 크게 웃어봐요'],
+  [0,'😐 포커페이스 맘','오늘 많이 피곤했죠? 한 번만 크게 웃어볼까요?']
+];
+
+function reasonsFor(f, score){
+  const r = [];
+  const pct = v => Math.round(v * 100);
+  if (f.smile >= 0.85) r.push(['😄', `입꼬리가 끝까지 쭉 올라갔어요 (${pct(f.smile)}%). 미소 점수의 절반을 차지하는 가장 중요한 부분이에요!`]);
+  else if (f.smile >= 0.6) r.push(['🙂', `입꼬리가 기분 좋게 올라갔어요 (${pct(f.smile)}%). 조금만 더 올리면 고득점이에요.`]);
+  else if (f.smile >= 0.3) r.push(['😶', `입꼬리가 살짝만 올라갔어요 (${pct(f.smile)}%). 입꼬리가 점수의 50%라서 여기서 점수가 많이 빠졌어요.`]);
+  else r.push(['😐', `입꼬리가 거의 움직이지 않았어요 (${pct(f.smile)}%). 그래서 점수가 낮게 나왔어요.`]);
+
+  if (f.eyes >= 0.6) r.push(['🥰', `눈까지 반달처럼 웃고 있어요 (${pct(f.eyes)}%)! 진짜 행복할 때 나오는 '눈웃음'이라 가산점을 받았어요.`]);
+  else if (f.eyes >= 0.3) r.push(['👀', `눈웃음이 살짝 보여요 (${pct(f.eyes)}%). 광대가 더 올라가면 눈도 자연스럽게 휘어져요.`]);
+  else r.push(['👁️', `입은 웃는데 눈은 아직 덜 웃었어요 (${pct(f.eyes)}%). 눈웃음이 점수의 25%예요.`]);
+
+  if (f.teeth >= 0.6) r.push(['🦷', `치아가 시원하게 보여서 훨씬 밝고 환해 보여요 (${pct(f.teeth)}%).`]);
+  else if (f.teeth >= 0.3) r.push(['💋', `치아가 살짝 보여요 (${pct(f.teeth)}%). 조금 더 드러나면 더 환해 보여요.`]);
+  else r.push(['🤐', `입을 다문 미소라 화사함 점수(15%)는 조금 덜 받았어요.`]);
+
+  if (f.sym >= 0.85) r.push(['⚖️', `양쪽 입꼬리가 고르게 올라간 균형 잡힌 미소예요 (${pct(f.sym)}%).`]);
+  else r.push(['↗️', `한쪽 입꼬리가 조금 더 올라갔어요 (균형 ${pct(f.sym)}%). 자연스러운 매력이지만 점수는 살짝 빠져요.`]);
+
+  if (score === 99) r.push(['🤏', '100점까지 단 1점! 100점은 입꼬리와 눈웃음이 모두 최고일 때만 드려요.']);
+  return r;
+}
+
+function tipFor(f, score){
+  if (score >= 100) return '🏆 <b>만점 비결:</b> 지금 그 표정 그대로! 오늘 아기에게도 이 미소를 많이 보여주세요 💕';
+  const weakest = [['smile',f.smile/1],['eyes',f.eyes/1],['teeth',f.teeth/1]].sort((a,b)=>a[1]-b[1])[0][0];
+  const tips = {
+    smile:'💡 <b>점수 올리는 팁:</b> "위스키~" 하고 말하듯 입꼬리를 귀 쪽으로 쭉 끌어올려 보세요!',
+    eyes:'💡 <b>점수 올리는 팁:</b> 우리 아기가 처음 "엄마!" 불렀던 순간을 떠올려 보세요. 눈이 저절로 웃어요 🥹',
+    teeth:'💡 <b>점수 올리는 팁:</b> 입을 살짝 벌리고 윗니가 보이게 "이~" 하고 웃으면 훨씬 화사해져요!'
+  };
+  return tips[weakest];
+}
+
+function showResult(url, f, comment){
+  const score = computeScore(f);
+  $('resImg').src = url;
+  const d = new Date();
+  $('resCap').textContent = `${d.getMonth()+1}월 ${d.getDate()}일의 미소 💕`;
+  const g = GRADES.find(x => score >= x[0]);
+  $('gradeT').textContent = g[1]; $('gradeD').textContent = g[2];
+  $('sticker').classList.toggle('perfect', score >= 100);
+
+  const items = [['😄 입꼬리', f.smile, 'linear-gradient(90deg,#ffb3c6,#ff6f91)', '50%'],
+                 ['🥰 눈웃음', f.eyes, 'linear-gradient(90deg,#d5c4ff,#a78bfa)', '25%'],
+                 ['🦷 화사함', f.teeth, 'linear-gradient(90deg,#ffd6b8,#ff9a76)', '15%'],
+                 ['⚖️ 균형', f.sym, 'linear-gradient(90deg,#c3f0dd,#6fcf97)', '10%']];
+  $('feats').innerHTML = items.map(([n,v,c,w]) =>
+    `<div class="feat"><div class="row"><span>${n} <small style="color:#b9a6b1">(비중 ${w})</small></span><span>${Math.round(v*100)}</span></div><div class="bar"><i data-w="${Math.round(v*100)}" style="background:${c}"></i></div></div>`).join('');
+  $('reasons').innerHTML = reasonsFor(f, score).map(([e,t]) => `<div class="reason"><span class="e">${e}</span><span>${t}</span></div>`).join('');
+  $('tip').innerHTML = tipFor(f, score);
+  if (comment) { $('aiCmt').style.display=''; $('aiCmt').textContent = '🌸 심사위원 한마디: ' + comment; } else $('aiCmt').style.display='none';
+
+  const prevBest = getBest();
+  if (score > prevBest) setBest(score);
+  renderBest();
+
+  show('sResult');
+  requestAnimationFrame(() => document.querySelectorAll('.feat .bar i').forEach(i => i.style.width = i.dataset.w + '%'));
+  // count up
+  const n = $('scoreN'); const t0 = performance.now(); const dur = 1400;
+  const step = t => { const p = clamp((t - t0) / dur); n.textContent = Math.round(score * (1 - Math.pow(1-p, 3))); if (p < 1) requestAnimationFrame(step); else if (score >= 90) confetti(score >= 100 ? 220 : 110); };
+  requestAnimationFrame(step);
+  if (score > prevBest && prevBest) $('gradeD').textContent += ` · 🎉 최고 기록 경신! (${prevBest}→${score})`;
+}
+
+/* ---------- confetti ---------- */
+function confetti(count){
+  const c = $('confetti'), ctx = c.getContext('2d');
+  c.width = innerWidth; c.height = innerHeight;
+  const cols = ['#ff8fab','#ffc2a8','#cdb4ff','#a8e6cf','#ffe066','#ff6f91'];
+  const ps = Array.from({length:count}, () => ({ x:Math.random()*c.width, y:-20-Math.random()*c.height*.5, r:4+Math.random()*6, vy:2+Math.random()*3, vx:-1.5+Math.random()*3, a:Math.random()*6, va:-.1+Math.random()*.2, col:cols[Math.random()*cols.length|0], heart:Math.random()<.3 }));
+  const t0 = performance.now();
+  const draw = t => {
+    ctx.clearRect(0,0,c.width,c.height);
+    ps.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.a += p.va;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.col;
+      if (p.heart) { ctx.font = `${p.r*3}px serif`; ctx.fillText('♥', 0, 0); } else ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+      ctx.restore();
+    });
+    if (t - t0 < 4500) requestAnimationFrame(draw); else ctx.clearRect(0,0,c.width,c.height);
+  };
+  requestAnimationFrame(draw);
+}
+
+/* ---------- buttons ---------- */
+$('startBtn').onclick = start;
+$('againBtn').onclick = start;
+$('homeBtn').onclick = () => { renderBest(); show('sIntro'); };
+$('camCancel').onclick = () => { cancelFlag = true; stopCam(); $('count').textContent=''; renderBest(); show('sIntro'); };
+$('fbBack').onclick = () => { renderBest(); show('sIntro'); };
+</script>
+</body>
+</html>
