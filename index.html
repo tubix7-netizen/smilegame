@@ -53,7 +53,7 @@ h1,h2,.jua{font-family:'Jua',sans-serif;font-weight:400}
 .cam-top p{color:var(--sub);font-size:14px;margin-top:4px;min-height:20px}
 .cam{position:relative;width:100%;aspect-ratio:3/4;border-radius:30px;overflow:hidden;background:#2b2127;box-shadow:var(--shadow);border:5px solid #fff}
 .cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
-.guide{position:absolute;left:50%;top:46%;width:62%;aspect-ratio:3/4;transform:translate(-50%,-50%);border:3px dashed rgba(255,255,255,.7);border-radius:50%;transition:.3s}
+.guide{position:absolute;left:50%;top:47%;width:84%;aspect-ratio:3/4;transform:translate(-50%,-50%);border:3px dashed rgba(255,255,255,.7);border-radius:50%;transition:.3s}
 .guide.ok{border:4px solid #a8e6cf;box-shadow:0 0 0 999px rgba(0,0,0,.18),0 0 30px #a8e6cf}
 .count{position:absolute;inset:0;display:grid;place-items:center;font-family:'Jua';font-size:150px;color:#fff;text-shadow:0 6px 30px rgba(240,98,146,.8);pointer-events:none}
 .count.pop{animation:pop .9s ease}
@@ -151,6 +151,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
       <div class="live" id="live">지금 미소 게이지 😊<div class="bar"><i id="liveBar"></i></div></div>
     </div>
     <div class="tipline">💡 눈까지 함께 웃으면 점수가 쑥쑥 올라가요</div>
+    <button class="btn" id="goNow" style="margin-bottom:10px">😆 바로 3·2·1 시작</button>
     <button class="btn ghost" id="camCancel">처음으로</button>
   </section>
 
@@ -230,8 +231,7 @@ function loadML(){
         baseOptions:{ modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate },
         outputFaceBlendshapes:true, runningMode:'VIDEO', numFaces:1
       });
-      try { landmarker = await vision.FaceLandmarker.createFromOptions(files, opts('GPU')); }
-      catch(e){ landmarker = await vision.FaceLandmarker.createFromOptions(files, opts('CPU')); }
+      landmarker = await vision.FaceLandmarker.createFromOptions(files, opts('CPU'));
     } catch(e){ landmarker = null; console.warn('ML unavailable', e); }
     mlTried = true;
     return landmarker;
@@ -315,10 +315,13 @@ async function detectLoop(){
   const v = $('video');
   try { landmarker.setOptions({ runningMode:'VIDEO' }); } catch(e){}
   running = true;
-  let faceFrames = 0, counting = false, lastT = -1;
-  const startCount = async () => {
+  let faceFrames = 0, counting = false, lastT = -1, errs = 0;
+  const t0 = performance.now();
+  const startCount = async (found = true) => {
+    if (counting) return;
     counting = true;
-    $('camTitle').textContent = '찾았다! 이제 활짝 웃어요 😆';
+    $('goNow').style.display = 'none';
+    $('camTitle').textContent = found ? '찾았다! 이제 활짝 웃어요 😆' : '이제 활짝 웃어요 😆';
     $('camSub').textContent = '';
     $('live').classList.add('on');
     for (const n of [3,2,1]) {
@@ -335,7 +338,7 @@ async function detectLoop(){
     if (v.currentTime !== lastT) {
       lastT = v.currentTime;
       let res = null;
-      try { res = landmarker.detectForVideo(v, performance.now()); } catch(e){}
+      try { res = landmarker.detectForVideo(v, performance.now()); } catch(e){ errs++; }
       const has = res && res.faceLandmarks && res.faceLandmarks.length;
       $('guide').classList.toggle('ok', !!has);
       if (has && res.faceBlendshapes && res.faceBlendshapes[0]) {
@@ -343,16 +346,22 @@ async function detectLoop(){
         $('liveBar').style.width = ((sc - 40) / 60 * 100) + '%';
       }
       if (!counting) {
-        faceFrames = has ? faceFrames + 1 : 0;
-        if (faceFrames > 12) startCount();
+        faceFrames = has ? faceFrames + 1 : Math.max(0, faceFrames - 1);
+        if (faceFrames > 4) startCount(true);
+        else if (performance.now() - t0 > 6000) {
+          $('camSub').textContent = '얼굴이 잘 안 잡히면 아래 버튼을 눌러주세요 👇';
+        }
       }
     }
     requestAnimationFrame(tick);
   };
+  $('goNow').style.display = '';
+  $('goNow').onclick = () => startCount(false);
   requestAnimationFrame(tick);
 }
 
 async function simpleCountdown(){
+  $('goNow').style.display = 'none';
   $('camTitle').textContent = '준비됐나요? 활짝 웃어요 😆';
   $('camSub').textContent = '';
   await sleep(1200);
